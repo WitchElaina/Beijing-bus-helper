@@ -32,3 +32,12 @@ def to_list():
     """
     # TODO
     pass
+
+
+def to_adj_list():
+    """
+    convert txt to adjacency list
+    :return: a dict like {vertex:[adj, adj, ...], ...}
+    """
+    # TODO
+    pass
