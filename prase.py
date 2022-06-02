@@ -34,7 +34,7 @@ def to_dict():
 def to_list():
     """
     将txt中所有站点存放在列表中, 返回一个包含所有站点且无重复站点的列表
-    :return: 包含所有线路信息的字典
+    :return: 包含所有线路信息的列表
     """
     content = []
     f1 = open(filename, 'rt', encoding="utf-8")
