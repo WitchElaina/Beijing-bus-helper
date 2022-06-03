@@ -2,7 +2,7 @@
 prase.py
 用于从st.txt文档中提取站点信息, 并将其转化为python对象
 """
-
+import multiprocessing as mp
 filename = ''
 
 
@@ -46,10 +46,60 @@ def to_list():
     return content
 
 
+def get_adj(st, adj_list):
+    """
+    get all adjacency station for st
+    :param st: station
+    :return: list of st's adjacency
+    """
+    load('st.txt')
+    # print(st)
+    ret = []
+    all_stations = to_dict().values()
+    for line in all_stations:
+        if st in line:
+            loc = line.index(st)
+            if loc == 0:
+                if line[1] not in ret:
+                    ret.append(line[1])
+            elif loc == len(line)-1:
+                if line[len(line)-2] not in ret:
+                    ret.append(line[len(line)-2])
+            else:
+                if line[loc-1] not in ret:
+                    ret.append(line[loc-1])
+                if line[loc+1] not in ret:
+                    ret.append(line[loc+1])
+    # print(st, end='->')
+    # print(ret)
+    adj_list[st] = ret
+
+
 def to_adj_list():
     """
-    convert txt to adjacency list
+    convert txt to adjacency list, use multiprocessing to improve performance
     :return: a dict like {vertex:[adj, adj, ...], ...}
     """
-    # TODO
-    pass
+    # all stations
+    st_list = to_list()
+
+    # create processing pool by cpu core counts
+    pool = mp.Pool(mp.cpu_count())
+
+    # creat shared dict to store data
+    adj_list = mp.Manager().dict()
+
+    # push process to pool
+    for st in st_list:
+        pool.apply_async(get_adj, args=(st, adj_list))
+    pool.close()
+    pool.join()
+    return adj_list
+
+
+# if __name__ == '__main__':
+#     load('st.txt')
+#     # print('Loading...', end=str(len(to_list())))
+#     adj_list = to_adj_list()
+#     print(adj_list['北京科技大学北门'])
+#     print(len(adj_list))
