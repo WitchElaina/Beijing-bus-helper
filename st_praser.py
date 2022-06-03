@@ -1,5 +1,5 @@
 """
-prase.py
+st_praser.py
 用于从st.txt文档中提取站点信息, 并将其转化为python对象
 """
 import multiprocessing as mp
