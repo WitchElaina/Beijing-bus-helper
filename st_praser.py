@@ -5,7 +5,6 @@ st_praser.py
 import multiprocessing as mp
 filename = ''
 
-
 def load(f_name: str):
     """
     初始化函数, 设置数据源的路径和文件名
@@ -74,6 +73,38 @@ def get_adj(st, adj_list):
     # print(ret)
     adj_list[st] = ret
 
+def get_dfs_adj(st, adj_list):
+    """
+    get all dfs_search adjacency station for st
+    :param st: station
+    :return: dict of st's adjacency
+    """
+    load('st.txt')
+    # print(st)
+    ret = []
+    all_stations = to_dict().values()
+    for line in all_stations:
+        if st in line:
+            loc = line.index(st)
+            if loc == 0:
+                if line[1] not in ret:
+                    ret.append(line[1])
+            elif loc == len(line)-1:
+                if line[len(line)-2] not in ret:
+                    ret.append(line[len(line)-2])
+            else:
+                if line[loc-1] not in ret:
+                    ret.append(line[loc-1])
+                if line[loc+1] not in ret:
+                    ret.append(line[loc+1])
+    # print(st, end='->')
+    # print(ret)
+    ret_dict = {}
+    for i in ret:
+        ret_dict[i] = False
+    adj_list[st] = ret_dict
+
+
 
 def to_adj_list():
     """
@@ -96,6 +127,27 @@ def to_adj_list():
     pool.join()
     return adj_list
 
+
+def to_dfs_adj_list():
+    """
+    convert txt to dfs_search adjacency list, use multiprocessing to improve performance
+    :return: a dict like {vertex:[adj: is_visited, adj: is_visited, ...], ...}
+    """
+    # all stations
+    st_list = to_list()
+
+    # create processing pool by cpu core counts
+    pool = mp.Pool(mp.cpu_count())
+
+    # creat shared dict to store data
+    adj_list = mp.Manager().dict()
+
+    # push process to pool
+    for st in st_list:
+        pool.apply_async(get_dfs_adj, args=(st, adj_list))
+    pool.close()
+    pool.join()
+    return adj_list
 
 # if __name__ == '__main__':
 #     load('st.txt')
