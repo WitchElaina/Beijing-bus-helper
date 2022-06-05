@@ -5,6 +5,7 @@ st_praser.py
 import multiprocessing as mp
 filename = ''
 
+
 def load(f_name: str):
     """
     初始化函数, 设置数据源的路径和文件名
@@ -49,10 +50,9 @@ def get_adj(st, adj_list):
     """
     get all adjacency station for st
     :param st: station
-    :return: list of st's adjacency
+    :return: list of station's adjacency
     """
     load('st.txt')
-    # print(st)
     ret = []
     all_stations = to_dict().values()
     for line in all_stations:
@@ -69,9 +69,8 @@ def get_adj(st, adj_list):
                     ret.append(line[loc-1])
                 if line[loc+1] not in ret:
                     ret.append(line[loc+1])
-    # print(st, end='->')
-    # print(ret)
     adj_list[st] = ret
+
 
 def get_dfs_adj(st, adj_list):
     """
@@ -103,7 +102,6 @@ def get_dfs_adj(st, adj_list):
     for i in ret:
         ret_dict[i] = False
     adj_list[st] = ret_dict
-
 
 
 def to_adj_list():
@@ -148,6 +146,7 @@ def to_dfs_adj_list():
     pool.close()
     pool.join()
     return adj_list
+
 
 # if __name__ == '__main__':
 #     load('st.txt')
