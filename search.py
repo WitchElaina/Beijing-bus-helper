@@ -78,12 +78,6 @@ if __name__ == '__main__':
     sp.load('st.txt')
     # st = input('Start:')
     # ed = input('Destination:')
-    st, ed = '新村', '韩庄子北'
+    st, ed = '北京航空航天大学', '北京西站'
     graph = sp.to_adj_list()
     dfs_search_all(st, ed, graph)
-    #print(all_path)
-    #print("*" * 50)
-    print("min_change")
-    print(route_suggest.min_change(all_path))
-    print("min_station")
-    print(route_suggest.min_station(all_path))
