@@ -2,6 +2,7 @@
 search routes between two stations
 """
 import st_praser as sp
+import route_suggest
 import sys
 
 sys.setrecursionlimit(10000000)
@@ -77,7 +78,12 @@ if __name__ == '__main__':
     sp.load('st.txt')
     # st = input('Start:')
     # ed = input('Destination:')
-    st, ed = '成府路口南', '北京西站'
+    st, ed = '新村', '韩庄子北'
     graph = sp.to_adj_list()
     dfs_search_all(st, ed, graph)
-    print(all_path)
+    #print(all_path)
+    #print("*" * 50)
+    print("min_change")
+    print(route_suggest.min_change(all_path))
+    print("min_station")
+    print(route_suggest.min_station(all_path))
