@@ -171,7 +171,7 @@ def query(query_mode:str):
             path_change(content)
     else :
         for content in route_suggest.min_station(search.all_path):
-            print("方案%d:" %(route_suggest.min_change(search.all_path).index(content)+1))
+            print("方案%d:" %(route_suggest.min_station(search.all_path).index(content)+1))
             path_change(content)  
 
 
