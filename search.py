@@ -30,8 +30,47 @@ def is_change(path):
 
 
 def cal_change_time():    
-    # todo
-    pass
+    """
+    单路径的换乘数计算
+    结果存在counts中
+    """
+    counts = [] # 换乘次数列表
+    List_1 = []
+    lineList_2 = []
+    lineList_1 = []
+    lineList = []
+    text = sp.to_dict()
+    left = 0
+    right = 1
+    while right < len(path):
+        for key in text:
+            if path[left] in text[key] and path[left+1] in text[key] :
+                    List_1.append(key)
+        while len(List_1) > 0 and right < len(path) :
+            for f1 in List_1:
+                lineList_1 = []
+                if path[right] in text[f1] :
+                    List_1 = []
+                    List_1.append(f1)
+                    lineList_1.append(f1)
+                    break
+                if path[right] not in text[f1] :
+                    lineList_2.append(f1) 
+                    continue
+            if len(lineList_1) == 0:
+                lineList.append(lineList_2[0])
+                List_1 = []
+                lineList_2 = []
+                left = right - 1
+                if right == len(path) - 1:
+                    right = right - 1
+            if right == len(path) - 1 and len(List_1) != 0:
+                lineList.append(List_1[0])
+                List_1 = []
+                lineList_2 = []
+            right = right + 1
+    counts.append(len(lineList) - 1)
+    lineList = []
 
 
 def pruning(path):
@@ -69,7 +108,7 @@ def dfs_search_all(st, ed, graph):
     # check
     if st == ed:
         all_path.append(path.copy())
-        print(all_path[-1])
+        # print(all_path[-1])
     else:
         for i in graph[st]:
             if i not in path:
