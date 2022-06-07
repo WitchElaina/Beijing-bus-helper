@@ -29,12 +29,11 @@ def is_change(path):
     return True
 
 
-def cal_change_time():    
+def cal_change_time(path:list):    
     """
     单路径的换乘数计算
     结果存在counts中
     """
-    counts = [] # 换乘次数列表
     List_1 = []
     lineList_2 = []
     lineList_1 = []
@@ -69,8 +68,9 @@ def cal_change_time():
                 List_1 = []
                 lineList_2 = []
             right = right + 1
-    counts.append(len(lineList) - 1)
+    counts = len(lineList) - 1
     lineList = []
+    return counts
 
 
 def pruning(path):
@@ -125,3 +125,4 @@ if __name__ == '__main__':
     st, ed = '北京航空航天大学', '北京西站'
     graph = sp.to_adj_list()
     dfs_search_all(st, ed, graph)
+    # print(cal_change_time(all_path[0]))
