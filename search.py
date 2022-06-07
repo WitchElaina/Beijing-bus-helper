@@ -29,6 +29,11 @@ def is_change(path):
     return True
 
 
+def cal_change_time():    
+    # todo
+    pass
+
+
 def pruning(path):
     """
     puring func for DFS, calculate the number of lines in path
