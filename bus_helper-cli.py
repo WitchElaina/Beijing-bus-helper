@@ -242,7 +242,15 @@ def main_loop():
         elif command == '2' or command == '3' or command == '4':
             query(command)
         elif command == '6':
-            get_line_info()
+            is_input = True
+            while is_input:
+                try:
+                    get_line_info()
+                    is_input = False
+                except KeyError:
+                    print("Error!")
+                    print("Invalid line input!")
+                    is_input = True
         elif command == '7':
             show_all()
         else:
