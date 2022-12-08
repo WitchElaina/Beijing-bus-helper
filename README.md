@@ -195,3 +195,11 @@ if __name__ == '__main__':
 搜索完成后, 需要根据用户需求进行选优, `min_change`方法用于获取路径中最少换乘的路径, `min_station`方法用于获取距离最短(经过最少站点)的路径
 
 > ps. 如果有平行方案会全部输出
+
+
+
+## Usage
+
+```shell
+python bus_helper-cli.py
+```
