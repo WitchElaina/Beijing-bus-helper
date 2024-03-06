@@ -1,6 +1,25 @@
 # Beijing-bus-helper
 
-USTB人工智能大作业, 北京公交换乘助手
+USTB 人工智能大作业, 北京公交换乘助手
+
+## Web UI
+
+更新了 Web UI，后端基于 Flask，前端基于 React + Ant Design
+
+首先运行服务端
+
+```shell
+pip install flask flask-cors
+python server.py
+```
+
+然后运行前端
+
+```shell
+cd web
+yarn install
+yarn run dev
+```
 
 ## Development
 
@@ -8,11 +27,11 @@ USTB人工智能大作业, 北京公交换乘助手
 
 使用爬虫获取数据, 目标网站为https://bus.mapbar.com/
 
-观察网站结构后发现, 网站有一个导航页收录了所有北京公交线路的URL, 因此可以首先对该导航页进行爬取, 获得所有线路的URL
+观察网站结构后发现, 网站有一个导航页收录了所有北京公交线路的 URL, 因此可以首先对该导航页进行爬取, 获得所有线路的 URL
 
-#### 获取URL
+#### 获取 URL
 
-观察导航页的html源码, 发现所有url都被存放在`<dd>`标签中, 因此只需找到这些元素即可, 代码如下
+观察导航页的 html 源码, 发现所有 url 都被存放在`<dd>`标签中, 因此只需找到这些元素即可, 代码如下
 
 ```python
 # url_robot.py
@@ -36,11 +55,13 @@ for i in all_url:
 ```
 
 将输出重定向至`url.txt`, 方便以后读取
+
 ```shell
 python3 url_robot.py > urls.txt
 ```
 
 在`url.txt`中会得到以下格式的字符串
+
 ```text
 <dd>
 <a href="http://bus.mapbar.com/beijing/xianlu/1lu/" target="_blank" title="北京1路公交线路 ">1路</a>
@@ -49,7 +70,7 @@ python3 url_robot.py > urls.txt
 
 #### 获取站点信息
 
-接下来需要访问每条线路的URL, 随后抓取站点信息, 分析html源码后发现线路信息都存放在`id`属性为`stationName`的标签内, 因此只需找到这些元素即可
+接下来需要访问每条线路的 URL, 随后抓取站点信息, 分析 html 源码后发现线路信息都存放在`id`属性为`stationName`的标签内, 因此只需找到这些元素即可
 
 ```python
 res = requests.get(url, headers=headers)
@@ -57,9 +78,14 @@ bs = BeautifulSoup(res.text, 'lxml')
 stations = bs.find_all('input', id='stationNames')
 ```
 
-上述代码会将获得的html代码存储在`station`中, 格式类似
+上述代码会将获得的 html 代码存储在`station`中, 格式类似
+
 ```html
-<input type="hidden" value="老山公交场站,老山南路东口,地铁八宝山站,玉泉路口西,永定路口东,五棵松桥西,沙沟路口西,东翠路口,万寿路口西,翠微路口,公主坟,军事博物馆,木樨地西,工会大楼,南礼士路,复兴门内,西单路口东,天安门西,天安门东,东单路口西,北京站口东,日坛路,永安里路口西,大北窑西,大北窑东,郎家园,四惠枢纽站" id="stationNames">
+<input
+  type="hidden"
+  value="老山公交场站,老山南路东口,地铁八宝山站,玉泉路口西,永定路口东,五棵松桥西,沙沟路口西,东翠路口,万寿路口西,翠微路口,公主坟,军事博物馆,木樨地西,工会大楼,南礼士路,复兴门内,西单路口东,天安门西,天安门东,东单路口西,北京站口东,日坛路,永安里路口西,大北窑西,大北窑东,郎家园,四惠枢纽站"
+  id="stationNames"
+/>
 ```
 
 接下来利用字符串查找等相关操作提取出`value`中的元素, 然后`split(',')`按`,`分隔开, 即可得到站点列表, 将上述操作封装成`get_road_info`函数以便重复调用,
@@ -85,9 +111,10 @@ def get_road_info(title, url):
 
 核心功能完成后, 剩下的都是一些简单的工作, 如从先前的`url.txt`中提取`URL`, 将获得的站点信息格式化后写入文件
 
-> ps.为了防止请求过快被服务器ban掉ip, 需要设置一定的冷却时间, 这无疑会导致程序运行时间增加, 恰好手边有台闲置的服务器, 最终在服务器上运行完成了数据爬取
+> ps.为了防止请求过快被服务器 ban 掉 ip, 需要设置一定的冷却时间, 这无疑会导致程序运行时间增加, 恰好手边有台闲置的服务器, 最终在服务器上运行完成了数据爬取
 
 完整代码如下:
+
 ```python
 # per_rebot.py
 import requests
@@ -179,10 +206,9 @@ if __name__ == '__main__':
 
 ### 数据处理
 
-站点存储采用txt方式进行纯文本存储, 读取时调用`st_prase.py`中的方法
+站点存储采用 txt 方式进行纯文本存储, 读取时调用`st_prase.py`中的方法
 
 其中`to_adj_list`方法会返回一个邻接表用于后续构建图结构
-
 
 ### 路径搜索
 
@@ -195,8 +221,6 @@ if __name__ == '__main__':
 搜索完成后, 需要根据用户需求进行选优, `min_change`方法用于获取路径中最少换乘的路径, `min_station`方法用于获取距离最短(经过最少站点)的路径
 
 > ps. 如果有平行方案会全部输出
-
-
 
 ## Usage
 
